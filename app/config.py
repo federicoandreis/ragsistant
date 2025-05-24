@@ -34,11 +34,16 @@ class DatabaseConfig:
     """Database connection configuration."""
     neo4j_uri: str = os.getenv("NEO4J_URI", "bolt://localhost:7687")
     neo4j_username: str = os.getenv("NEO4J_USERNAME", "neo4j")
-    neo4j_password: str = os.getenv("NEO4J_PASSWORD", "password")
+    neo4j_password: str = os.getenv("NEO4J_PASSWORD")
     neo4j_database: str = os.getenv("NEO4J_DATABASE", "neo4j")
     chroma_persist_dir: str = os.getenv("CHROMA_DB_PATH", "storage/chroma_db")
     chroma_collection: str = "rag_chunks"
     neo4j_data_path: str = os.getenv("NEO4J_DATA_PATH", "storage/neo4j_data")
+    
+    def __post_init__(self):
+        """Validate required configuration after initialization."""
+        if not self.neo4j_password:
+            raise ValueError("NEO4J_PASSWORD environment variable is required")
 
 
 @dataclass

@@ -1,10 +1,9 @@
 import logging
 from neo4j import GraphDatabase, basic_auth
 from typing import List, Dict, Any
+from app.config import get_config
 
-NEO4J_URI = "bolt://localhost:7687"
-NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "test1234"  # TODO: Use env var or config
+config = get_config()
 
 def retrieve_entity_context(entity_name: str, hops: int = 1, max_relationships: int = 100) -> Dict[str, Any]:
     """
@@ -13,7 +12,10 @@ def retrieve_entity_context(entity_name: str, hops: int = 1, max_relationships: 
     max_relationships limits the number of relationships returned.
     """
     logging.info(f"[GRAPH RETRIEVAL] Searching for entity name: '{entity_name}' (hops={hops}, max_relationships={max_relationships})")
-    driver = GraphDatabase.driver(NEO4J_URI, auth=basic_auth(NEO4J_USER, NEO4J_PASSWORD))
+    driver = GraphDatabase.driver(
+        config.database.neo4j_uri, 
+        auth=basic_auth(config.database.neo4j_username, config.database.neo4j_password)
+    )
     result = {}
     with driver.session() as session:
         # Find the entity node by name (case-insensitive)
@@ -72,7 +74,10 @@ def retrieve_relevant_paths(
     Each path is a list of nodes and relationships.
     Optionally restrict to certain communities (by community_id property on nodes).
     """
-    driver = GraphDatabase.driver(NEO4J_URI, auth=basic_auth(NEO4J_USER, NEO4J_PASSWORD))
+    driver = GraphDatabase.driver(
+        config.database.neo4j_uri, 
+        auth=basic_auth(config.database.neo4j_username, config.database.neo4j_password)
+    )
     paths = []
     with driver.session() as session:
         # Build community filter if needed
@@ -113,7 +118,10 @@ def get_top_communities_for_query(entity_name: str, top_n: int = 3) -> list:
     Retrieve the top-N most relevant community IDs for a given entity (by overlap, proximity, or semantic similarity).
     For now, uses the community_id property of the entity and its neighbors.
     """
-    driver = GraphDatabase.driver(NEO4J_URI, auth=basic_auth(NEO4J_USER, NEO4J_PASSWORD))
+    driver = GraphDatabase.driver(
+        config.database.neo4j_uri, 
+        auth=basic_auth(config.database.neo4j_username, config.database.neo4j_password)
+    )
     community_ids = set()
     with driver.session() as session:
         # Get the community of the main entity

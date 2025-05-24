@@ -33,6 +33,7 @@ chunks/
 # Project specific files
 .windsurfrules
 prd.txt
+review.md
 
 # Python
 __pycache__/

@@ -2,6 +2,12 @@
 
 A production-ready hybrid RAG (Retrieval-Augmented Generation) system that combines Neo4j graph database and ChromaDB vector store for intelligent document querying. Features a clean Streamlit interface and modular architecture for easy extension.
 
+> **Latest Updates**
+> - 🛡️ Enhanced security with required environment variables for database credentials
+> - 🗃️ Implemented robust ChromaDB and Neo4j connectors with comprehensive error handling
+> - 📊 Added detailed configuration options in `.env.example` with clear documentation
+> - 🧪 Improved test coverage and code quality
+
 ## 🚀 Features
 
 - **Hybrid Storage**: Combines graph (Neo4j) and vector (ChromaDB) databases for optimal retrieval
@@ -44,11 +50,23 @@ python -m spacy download en_core_web_sm
 
 ### 5. Setup Configuration
 ```bash
+# Copy and edit the environment variables
 cp .env.example .env
-# Edit .env with your configuration
+
+# Important: Set your Neo4j password in the .env file
+# NEO4J_PASSWORD is required and has no default for security
 ```
 
-### 6. Start Required Services
+### 6. Install Dependencies
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Install development dependencies (optional)
+pip install -e ".[dev]"
+```
+
+### 7. Start Required Services
 
 #### Neo4j
 > **IMPORTANT:** RAGsistant requires the Neo4j Graph Data Science (GDS) module. Make sure your Neo4j instance has GDS installed and enabled.
@@ -76,6 +94,17 @@ docker run --name neo4j-gds \
 # Install Ollama from https://ollama.ai
 ollama pull gemma3:1b
 ollama pull mxbai-embed-large
+
+# Verify the models are available
+ollama list
+```
+
+### 8. Initialize the Application
+Before first use, you'll need to initialize the application with:
+
+```bash
+# This will set up the necessary database schemas and indexes
+python -m app.init
 ```
 
 ## 🚀 Quick Start
